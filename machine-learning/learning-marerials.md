@@ -1,6 +1,6 @@
 # Willing-Ox-Learning
 
-![willing-ox](willing-ox.jpg)
+![willing-ox](../willing-ox.jpg)
 
 
 
