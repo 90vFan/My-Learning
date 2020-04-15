@@ -22,12 +22,27 @@ TCP 是面向连接的，因而双方要维护连接的状态
 ### 建立连接：三次握手
 
 ```text
-C: hello, 我是C  (seq x            )  请求
-
-S: hello C,我是S (seq y  , ack x+1)   应答
-
-C: hello S      (seq x+1, ack y+1)    应答之应答
+S: start LISTEN ...
+C: hello, 我是C  (SYN seq x            )  请求
+S: hello C,我是S (SYN seq y  , ack x+1)   应答
+C: hello S      (SYN seq x+1, ack y+1)    应答之应答
 ```
 
 ![image-20200401120033736](images/image-20200401120033736.png)
 
+### 结束连接，四次挥手
+
+```
+C: 我不想玩了, S    (FIN seq=p     )
+S: 我知道了         (ACK ack=p+1   )
+S: Bye, C         (FIN, seq=q, ACK, ack=p+1)
+C: OK, Bye        (ACK, ack=q+1)
+```
+
+
+
+![image-20200413121359082](images/image-20200413121359082.png)
+
+### TCP 状态机
+
+![image-20200413121857344](images/image-20200413121857344.png)
