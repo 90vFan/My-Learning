@@ -12,7 +12,7 @@ a[i][j]_address = base_address + ( i * n + j) * type_size
 
 
 
-- 下标查找 O(1), 值查找 O(n)
+- 下标查找 O(1),  值查找 O(n)
 - 添加 O(n)   # 移位，
 - 删除 O(n)
 
@@ -160,6 +160,14 @@ head = (head + 1) % n;
 
 ![4.10.汉诺塔游戏.figure1](images/4.10.汉诺塔游戏.figure1.png)
 
+## 跳表
+
+![492206afe5e2fef9f683c7cff83afa65](images/492206afe5e2fef9f683c7cff83afa65.jpg)
+
+**链表+多级索引**：实现了基于链表的“二分查找
+
+插入、删除、查询操作的时间复杂度为 O(logn)。
+
 ## 散列表
 
 ![a4b77d593e4cb76acb2b0689294ec17f](images/a4b77d593e4cb76acb2b0689294ec17f.jpg)
@@ -208,25 +216,111 @@ int hash(Object key) {
 很难根据哈希值反向推导出原始数据，散列冲突的概率要很小。
 
 - 安全加密，MD5,SHA,DES,AES
-
 - 唯一标识，对大数据做信息摘要
-
 - 数据校验，校验数据的完整性和正确性，大文件校验
-
 - 安全加密，越是复杂哈希算法越难破解，但同样计算时间也就越长
 
   * 引入“盐salt"和密码组合，增加密码复杂度
-
 - 散列函数
-
 - 负载均衡，计算 Client IP/Session ID 的哈希值，哈希值映射到对应服务器IP/ID（哈希算法替代映射表）
-
 - 数据分片
 
   * 多台机器上统计关键字出现的次数，MapReduce
 
   * 判断图片是否在图库中，即给每个图片取唯一标识（或者信息摘要），然后构建散列表。
-
 - 分布式存储
 
-  
+## 二叉树
+
+![img](images/09c2972d56eb0cf67e727deda0e9412b.jpg)
+
+编号 2 的二叉树中，叶子节点全都在最底层，除了叶子节点之外，每个节点都有左右两个子节点，这种二叉树就叫做**满二叉树**。
+
+编号 3 的二叉树中，叶子节点都在最底下两层，最后一层的叶子节点都靠左排列，并且除了最后一层，其他层的节点个数都要达到最大，这种二叉树叫做**完全二叉树**。
+
+### 存储法
+
+![img](images/50f89510ad1f7570791dd12f4e9adeb4.jpg)
+
+**链式存储法**
+
+```java
+private Node tree;
+public static class Node {
+    private int data;
+    private Node left;
+    private Node right;
+
+    public Node(int data) {
+        this.data = data;
+    }
+}
+```
+
+![img](images/12cd11b2432ed7c4dfc9a2053cb70b8e.jpg)
+
+**顺序存储法**
+
+```sh
+root    -> i = 1 
+p.left  -> 2 * i 
+p.right -> 2 * i + 1
+p       -> i / 2
+```
+
+![img](images/14eaa820cb89a17a7303e8847a412330.jpg)
+
+### 遍历
+
+![img](images/ab103822e75b5b15c615b68560cb2416.jpg)
+
+```sh
+前序遍历的递推公式：preOrder(r) = print r->preOrder(r->left)->preOrder(r->right)
+中序遍历的递推公式：inOrder(r) = inOrder(r->left)->print r->inOrder(r->right)
+后序遍历的递推公式：postOrder(r) = postOrder(r->left)->postOrder(r->right)->print r
+```
+
+二叉树遍历的**时间复杂度**是 O(n)。
+
+### 查找
+
+![img](images/96b3d86ed9b7c4f399e8357ceed0db2a.jpg)
+
+### 插入
+
+![img](images/daa9fb557726ee6183c5b80222cfc5c5.jpg)
+
+### 二叉查找树的时间复杂度
+
+时间复杂度其实都跟树的高度成正比，也就是 O(height)
+
+![img](images/e3d9b2977d350526d2156f01960383d9.jpg)
+
+完全二叉树的层数小于等于 log2n +1， 完全二叉树的高度小于等于 log2n。
+
+### 平衡二叉查找树 AVL
+
+任何节点的左右子树高度相差不超过 1，是一种高度平衡的二叉查找树。
+
+![img](images/dd9f5a4525f5029a8339c89ad1c8159b-1596686887952.jpg)
+
+### 红黑树
+
+一棵红黑树需要满足以下几个**规则**：
+
+1. 根节点是黑色的；
+2. 节点是红色或黑色;
+3. 每个叶子节点都是黑色的空节点（NIL），也就是说，叶子节点不存储数据；
+4. 红色节点的子节点是黑色节点，也就是说，任何相邻的节点都不能同时为红色；
+5. 每个节点，从该节点到达其可达叶子节点的所有路径，都包含相同数目的黑色节点；(对于黑色节点完美平衡)
+
+![preview](images/v2-a183459a6010189e8b2b9415d85e550e_r.jpg)
+
+**近似平衡**：
+
+为保证红黑树的自平衡，从根节点到叶子的最长路径不会超过最短路径的 2 倍。
+
+- 最短路径，全部是黑色节点
+- 最长路径，红黑节点交替
+
+一棵极其平衡的二叉树（满二叉树或完全二叉树）的高度大约是 $log_2{n}$，所以如果要证明红黑树是近似平衡的，我们只需要分析，红黑树的高度是否比较稳定地趋近 $log_2{n}$ 就好了。
