@@ -52,3 +52,45 @@ Graph
 ### 深度优先搜索Depth-First-Search
 
 ![img](images/8778201ce6ff7037c0b3f26b83efba85.jpg)
+
+
+
+## 最短路径算法（Shortest Path Algorithm）
+
+**Dijkstra**
+
+```java
+public void dijkstra(int s, int t) {                // 从顶点s到顶点t的最短路径
+  int[] predecessor = new int[this.v];              // 用来还原最短路径
+  Vertex[] vertexes = new Vertex[this.v];           // 初始化所有顶点的 dist 都初始化为无穷大
+  for (int i = 0; i < this.v; ++i) {                
+    vertexes[i] = new Vertex(i, Integer.MAX_VALUE);
+  }
+  PriorityQueue queue = new PriorityQueue(this.v);  // 小顶堆
+  boolean[] inqueue = new boolean[this.v];          // 标记是否进入过队列
+  vertexes[s].dist = 0;                             // 起始顶点的 dist 值初始化为 0
+  queue.add(vertexes[s]);                           // 将起始顶点其放到优先级队列中
+  inqueue[s] = true;                                // 起始顶点标记入过队列
+  while (!queue.isEmpty()) {
+    Vertex minVertex= queue.poll();                 // 取堆顶元素并删除
+    if (minVertex.id == t) break;                   // 最短路径产生了 s->...->t
+    for (int i = 0; i < adj[minVertex.id].size(); ++i) {  // 遍历当前最近顶点的邻接边
+      Edge e = adj[minVertex.id].get(i);            // 取出一条minVetex相连的边
+      Vertex nextVertex = vertexes[e.tid];          // 获取当前邻接边下一个顶点nextVertex
+      if (minVertex.dist + e.w < nextVertex.dist) { // 如果当前路径更短             ***
+        nextVertex.dist = minVertex.dist + e.w;     // 更新顶点nextVertex的dist    ***
+        predecessor[nextVertex.id] = minVertex.id;  // 更新最短路径队列predecessor  ***
+        if (inqueue[nextVertex.id] == true) {       // 更新队列中的dist值
+          queue.update(nextVertex);                 
+        } else {
+          queue.add(nextVertex);                  
+          inqueue[nextVertex.id] = true;
+        }
+      }
+    }
+  }
+  System.out.print(s);                             // 输出最短路径
+  print(s, t, predecessor);                        // s->...->t
+}
+```
+
