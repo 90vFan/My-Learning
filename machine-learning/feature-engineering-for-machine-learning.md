@@ -4,7 +4,7 @@ date: 2019-10-08
 mathjax: true
 categories:
   - ml
-tag: 
+tag:
   - ml
   - hexo-asset-image
 ---
@@ -18,7 +18,7 @@ Feature Engineering
 
 ### 量化或装箱　　
 
-```python
+``` python
 >>> small_counts
 array([30, 64, 49, 26, 69, 23, 56, 7, 69, 67, 87, 14, 67, 33, 88, 77, 75, 47, 44, 93])
 ### Map to evenly spaced bins 0-9 by division
@@ -33,7 +33,7 @@ array([ 2., 3., 4., 1., 0., 2., 2., 3., 3., 4., 4., 1., 1., 3., 2., 2., 4.])
 
 ### 分位数装箱
 
-```python
+``` python
 ### Map the counts to quartiles
 >>> pd.qcut(large_counts, 4, labels=False)
 array([1, 2, 3, 0, 0, 1, 1, 2, 2, 3, 3, 0, 0, 2, 1, 0, 3], dtype=int64)
@@ -54,7 +54,7 @@ dtype: float64
 
 使用$R^2$评分来评估，好的模型有较高的 R 方分数。一个完美的模型得到最高分1， 一个坏的模型可以得到一个任意低的负评分。
 
-```python
+``` python
 scores_log = cross_val_score(m_log, biz_df[['log_review_count']], biz_df['stars'], cv=10)
 scores_log.mean()  # R^2
 ```
@@ -97,7 +97,7 @@ $x'=\frac{x}{\sqrt{\sum_{j} x_j^2}}$, L2缩放
 
 ![img](feature-engineering-for-machine-learning/2-17.png)
 
-```python
+``` python
 from sklearn.preprocessing import minmax_scale, StandardScaler, normalize
 
 df['minmax'] = minmax_scale(df[['n_tokens_content']])
@@ -117,7 +117,7 @@ $y = w_1X_1 + w_2X_2 + ... +   w_nX_n + w_{1,2}X_1X_2 + ...$
 
 ### $R^2$
 
-```python
+``` python
 model = linear_model.LinearRegression().fit(X_train, y_train)
 r_score = model.score(X_test, y_test)
 ```
@@ -155,7 +155,7 @@ tf-idf, 逆文档频率
 
 正确的特征缩放(L2, tf-idf)可以有助于分类。 正确的缩放突出了信息性词语，并降低了常见单词的权重。 它还可以改善数据矩阵的条件数。
 
-```python
+``` python
 # Represent the review text as a bag-of-words
 bow_transform = text.CountVectorizer()
 X_tr_bow = bow_transform.fit_transform(training_data['text'])
@@ -185,7 +185,7 @@ $max_w\sum_{i=1}^{n}(x_i^Tw)^2, where w^Tw=1$
 
 PCA 可以看做一种消除线性相关的方法
 
-```python
+``` python
 # Fit a PCA transformer to the dataset.
 # The number of components is automatically chosen to account for
 # at least 80% of the total variance.
@@ -215,9 +215,3 @@ array([ 0.14890594, 0.13618771, 0.11794594, 0.08409979, 0.05782415,
 $ (f*g)[i, j] = \sum_{\mu=0}^{m}\sum_{v=0}^{n} f[u, v]g[i-u, j-v]$
 
 特征：线条，梯度，颜色斑点和纹理
-
-
-
-
-
-

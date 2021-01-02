@@ -45,22 +45,22 @@ Covolution Neuro Network
 
 #### code
 
-```python
+``` python
 # forward
 def conv_forward_naive(x, w, b, conv_param):
     # input x: N data points, C channels, height H, width W
     N, C, H, W = x.shape
     # filter w: (F, C, HH, WW)
     F, _, HH, WW = w.shape
-    
+
     stride, pad = conv_param['stride'], conv_param['pad']
-    H_out = 1 + (H + 2 * pad - HH) // stride  
+    H_out = 1 + (H + 2 * pad - HH) // stride
     W_out = 1 + (W + 2 * pad - WW) // stride
     out = np.zeros((N, F, H_out, W_out))
-    
+
     # ０填充
     x_pad = np.pad(x, ((0,), (0,), (pad,), (pad,)), mode='constant', constant_values=0)
-    
+
     # out: (N, F, H', W')  F filters
     # N个输入格式一致，直接在矩阵中操作
     # 遍历输出点高度和宽度(h_out, w_out)
@@ -83,7 +83,7 @@ def conv_backward_naive(dout, cache):
     F, _, HH, WW = w.shape
     _, _, H_out, W_out = dout.shape
     stride, pad = conv_param['stride'], conv_param['pad']
-	
+
     # 0填充　padding
     x_pad = np.pad(x, ((0,), (0,), (pad,), (pad,)), mode='constant', constant_values=0)
 
@@ -108,7 +108,7 @@ def conv_backward_naive(dout, cache):
                         w[f, :, :, :] * dout[n, f, h_out, w_out]
 
     dx = dx_pad[:, :, pad:pad+H, pad:pad+W]
-	
+
     # return Gradients: dx, dw, db
     return dx, dw, db
 
@@ -134,9 +134,9 @@ def conv_backward_naive(dout, cache):
 
 ![img](cnn/641c8846abcb02d35938660cf96cef1b_hd.jpg)
 
-```python
+``` python
 
-def max_pool_forward_naive(x, pool_param): 
+def max_pool_forward_naive(x, pool_param):
     # input x: (N, C, H, W)
     N, C, H, W = x.shape
     # pool region: (heigth, width), stride
@@ -144,7 +144,7 @@ def max_pool_forward_naive(x, pool_param):
     pool_width = pool_param['pool_width']
     stride = pool_param['stride']
     # output: (N, C, H', W')
-    H_out = 1 + (H - pool_height) // stride 
+    H_out = 1 + (H - pool_height) // stride
     W_out = 1 + (W - pool_width) // stride
     out = np.zeros((N, C, H_out, W_out))
 
@@ -168,11 +168,11 @@ def max_pool_backward_naive(dout, cache):
     pool_width = pool_param['pool_width']
     stride = pool_param['stride']
     # output: (N, C, H', W')
-    H_out = 1 + (H - pool_height) // stride 
+    H_out = 1 + (H - pool_height) // stride
     W_out = 1 + (W - pool_width) // stride
     # 初始化梯度　dx
     dx = np.zeros_like(x)
-     
+
     # 遍历输入 n
     for n in range(N):
         # 遍历filter c
@@ -191,4 +191,3 @@ def max_pool_backward_naive(dout, cache):
 
     return dx
 ```
-

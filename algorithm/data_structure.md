@@ -1,10 +1,10 @@
-# 数据结构与算法之美 
+# 数据结构与算法之美
 
 ## 数组
 
 ![image-20200331165016453](images/image-20200331165016453.png)
 
-```py
+``` py
 a[i]_address = base_address + i * data_type_size
 
 a[i][j]_address = base_address + ( i * n + j) * type_size
@@ -34,7 +34,7 @@ a[i][j]_address = base_address + ( i * n + j) * type_size
 
 - 查找 O(n)   # 遍历
 - 插入 O(1)
-- 删除给定指针 O(1)，删除给定值 O(n)， 首先查找  
+- 删除给定指针 O(1)，删除给定值 O(n)， 首先查找
 
 链表本身没有大小的限制，天然地支持动态扩容
 
@@ -46,7 +46,7 @@ a[i][j]_address = base_address + ( i * n + j) * type_size
 
 ![img](images/05a4a3b57502968930d517c934347c6e.jpg)
 
-```sh
+``` sh
 p->next = x;       // 将p的next指针指向x结点 (a->next = x)
 x->next = p->next; // 将x的结点的next指针指向b结点 (x->next = b)
 ```
@@ -69,10 +69,10 @@ x->next = p->next; // 将x的结点的next指针指向b结点 (x->next = b)
 
 #### 函数调用栈
 
-```python
+``` python
 
 int main() {
-   int a = 1; 
+   int a = 1;
    int ret = 0;
    int res = 0;
    ret = add(3, 5);
@@ -110,7 +110,7 @@ int add(int x, int y) {
 
 ![c916fe2212f8f543ddf539296444d393](images/c916fe2212f8f543ddf539296444d393.jpg)
 
-```sh
+``` sh
 // 入队
 tail->next = new_node;
 tail = tail->next;
@@ -120,7 +120,7 @@ head = head->next;
 
 ![3d81a44f8c42b3ceee55605f9aeedcec](images/3d81a44f8c42b3ceee55605f9aeedcec.jpg)
 
-```sh
+``` sh
 tail = (tail + 1) % n;
 head = (head + 1) % n;
 ```
@@ -174,7 +174,7 @@ head = (head + 1) % n;
 
 #### 装载因子(Load Factor)
 
-```sh
+``` sh
 装载因子 = 元素总数 / 散列表的长度
 ```
 
@@ -182,7 +182,7 @@ head = (head + 1) % n;
 
 Example:  单词 word 转换为散列值
 
-```sh
+``` sh
 hash("nice")=(("n" - "a") * 26*26*26 + ("i" - "a")*26*26 + ("c" - "a")*26+ ("e"-"a")) / 78978
 ```
 
@@ -194,7 +194,7 @@ hash("nice")=(("n" - "a") * 26*26*26 + ("i" - "a")*26*26 + ("c" - "a")*26+ ("e"-
 
 #### 散列函数
 
-```java
+``` java
 int hash(Object key) {
     int h = key.hashCode()；
     return (h ^ (h >>> 16)) & (capicity -1); //capicity表示散列表的大小
@@ -244,7 +244,7 @@ int hash(Object key) {
 
 **链式存储法**
 
-```java
+``` java
 private Node tree;
 public static class Node {
     private int data;
@@ -261,9 +261,9 @@ public static class Node {
 
 **顺序存储法**
 
-```sh
-root    -> i = 1 
-p.left  -> 2 * i 
+``` sh
+root    -> i = 1
+p.left  -> 2 * i
 p.right -> 2 * i + 1
 p       -> i / 2
 ```
@@ -274,7 +274,7 @@ p       -> i / 2
 
 ![img](images/ab103822e75b5b15c615b68560cb2416.jpg)
 
-```sh
+``` sh
 前序遍历的递推公式：preOrder(r) = print r->preOrder(r->left)->preOrder(r->right)
 中序遍历的递推公式：inOrder(r) = inOrder(r->left)->print r->inOrder(r->right)
 后序遍历的递推公式：postOrder(r) = postOrder(r->left)->postOrder(r->right)->print r

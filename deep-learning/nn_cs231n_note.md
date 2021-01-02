@@ -1,5 +1,5 @@
 ---
-title: Neuron Network
+title: 深度学习和神经网络(CS231n Note)
 date: 2019-06-17
 mathjax: true
 categories:
@@ -53,9 +53,9 @@ tag:
 
 |         | 函数                                    | 值域          | 导数 | 备注 |
 | ------- | --------------------------------------- | ------------- | ---- | ---- |
-| sigmoid | $ \sigma(x)=\frac{1}{1+e^{-x}} $        | [0,1]         | [0, 0.25]   $\sigma'(x)=\sigma(x)(1-\sigma(x))$ | 分类概率 |
+| sigmoid | $ \sigma(x)=\frac{1}{1+e^{-x}} $     | [0,1]         | [0, 0.25]   $\sigma'(x)=\sigma(x)(1-\sigma(x))$ | 分类概率 |
 | tanh    | $tanh(x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}$ | [-1,1]        | [0, 1]  $tanh'(x)=1-(tan(x))^2$ |      |
-| relu    | $relu(x)=max(0, x)$                     | $[0,+\infty]$ |$f'_x=\begin{cases}0, x<0 \\ 1, x>0 \\ undefinded, x=0 \end{cases}$| |
+| relu    | $relu(x)=max(0, x)$                    | $[0,+\infty]$ |$f'_x=\begin{cases}0, x<0 \\ 1, x>0 \\ undefinded, x=0 \end{cases}$| |
 #### sigmoid
 
 优点：
@@ -164,7 +164,7 @@ W = 0.01 * np.random.randn(N, D)
 
 数据量增大，随机初始化的神经元输出数据分布的方差也增大
 
-```python
+``` python
 W = np.random.randn(N, D) / np.sqrt(N)
 ```
 
@@ -174,7 +174,7 @@ W = np.random.randn(N, D) / np.sqrt(N)
 
 当前的推荐是使用ReLU激活函数，并且使用**w = np.random.randn(n) \* sqrt(2.0/n)**来进行权重初始化
 
-```python
+``` python
 W = np.random.randn(n) * sqrt(2.0/n)
 ```
 
@@ -200,5 +200,4 @@ References:
 
 1. [cs231n课程笔记中文翻译](<https://zhuanlan.zhihu.com/p/21930884>)
 2. [cs231n Assignments 解答 - 大数据文摘](<https://github.com/theBigDataDigest/Stanford-CS231n-assignments-in-Chinese>)
-3. 
-
+3.

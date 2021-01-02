@@ -190,7 +190,7 @@ $$\theta = \theta - v_t$$
 
 当参数向量位于某个位置ｘ时，动量部分衰减$\gamma v_{t-1}$，向前一步$\theta-\gamma v_{t-1}$得到下一步要到达的位置，**向前看**在**下一步**的位置计算梯度。![img](optimization/412afb713ddcff0ba9165ab026563304_hd.png)
 
-```python
+``` python
 x_ahead = x + mu * v
 # 计算dx_ahead(在x_ahead处的梯度，而不是在x处的梯度)
 v = mu * v - learning_rate * dx_ahead
@@ -331,4 +331,3 @@ References:
 2. [梯度下降优化算法综述(1的翻译)](<https://blog.csdn.net/heyongluoyao8/article/details/52478715>)
 3. [一个框架看懂优化算法之异同 SGD/AdaGrad/Adam - Juliuszh的文章 - 知乎](
    https://zhuanlan.zhihu.com/p/32230623)
-

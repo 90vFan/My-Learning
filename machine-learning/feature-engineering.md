@@ -4,7 +4,7 @@ date: 2019-07-22
 mathjax: true
 categories:
   - ml
-tag: 
+tag:
   - ml
   - hexo-asset-image
 ---
@@ -16,7 +16,7 @@ Feature Engineering
 
 **sklearn.preprocessing**
 
-```python
+``` python
 from sklearn.preprocessing import StandardScaler
 StandardScaler().fit_transform(iris.data)
 ```
@@ -60,4 +60,4 @@ References:
 
 1. <https://www.cnblogs.com/jasonfreak/p/5448385.html>
 2. <https://sklearn.apachecn.org/#/docs/>
-3. 
+3.

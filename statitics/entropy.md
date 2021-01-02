@@ -3,7 +3,7 @@ title: entropy
 date: 2019-03-25 23:18:46
 categories:
   - math
-tag: 
+tag:
   - math
 ---
 
@@ -107,7 +107,7 @@ $D_{KL}(p||q)=E_{x ~ p}[\frac{\log p(i)}{\log q(i)}]=H(p,q)-H(p) = \sum\limits_{
 1. 交叉熵适用于分类问题，结果是离散的类别（如图片分类），而均方误差适用于回归问题，结果是一个连续的数值（如雨量预测）【实际上均方误差也可以用于分类问题】
 2. 在使用 sigmod 激活函数时，如果使用均方误差作为损失函数，反向传播的导数（直接影响学习速度）会包含 sigmod函数的梯度，这个梯度随着变量的增大会趋向于0，导致学习速度迅速降低(梯度消失)；而如果使用交叉熵作为损失函数，就不存在这个问题，反向传播的导数包含 sigmod 函数，而不包含 sigmod 函数的导数。
 
-```python
+``` python
 # softmax_cross_entropy_with_logits计算后，矩阵的每一行数据计算出一个交叉熵，三行数据共计算出三个交叉熵
 cross_entropy_lst = tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y_)
 # 通过reduce_sum进行累加，计算出一个batch的交叉熵

@@ -1,3 +1,6 @@
+排序
+-------
+
 # 冒泡排序
 
 ### 图解
@@ -10,7 +13,7 @@
 
 ### 代码
 
-```java
+``` java
 public static void bubbleSort(int[] a, int n) {
     if (n <= 1) return;
 
@@ -37,7 +40,7 @@ public static void bubbleSort(int[] a, int n) {
 	* best O(n)，已经有序, 一次冒泡
 	* worst $O(n^2)$, n次冒泡
 ### “有序度”和“逆序度“
-```sh
+``` sh
 有序元素对：a[i] <= a[j], 如果i < j。
 ```
 
@@ -47,7 +50,7 @@ public static void bubbleSort(int[] a, int n) {
 	* worst，初始状态的有序度是 0，所以要进行 $n*(n-1)/2$ 次**交换**
 	* bset 最好情况下，初始状态的有序度是 $n*(n-1)/2$，就不需要进行**交换**
 	* 取中间值 $n*(n-1)/4$
-- 逆序度  
+- 逆序度
 	* 逆序度 = 满有序度 - 有序度
 	* 满有序度：$n*(n-1)/2$
 
@@ -65,7 +68,7 @@ public static void bubbleSort(int[] a, int n) {
 
 ### 代码
 
-```java
+``` java
 public static void insertionSort(int[] a, int n) {
     if (n <= 1) return;
 
@@ -90,12 +93,12 @@ public static void insertionSort(int[] a, int n) {
 - 时间复杂度$O(n^2)$
   * best, $O(n)$
   * worst, $O(n^2)$
-  
+
 - 稳定排序算法，对于值相同的元素，我们可以选择将后面出现的元素，插入到前面出现元素的后面
 
 # 选择排序
 
-### 图解				
+### 图解
 
 ![9916080-105a90fe3d1e56d6](images/9916080-105a90fe3d1e56d6.gif)
 
@@ -105,7 +108,7 @@ public static void insertionSort(int[] a, int n) {
 
 ### 代码
 
-```java
+``` java
 public static void selectionSort(int[] a, int n) {
     if (n <= 1) return;
 
@@ -145,15 +148,15 @@ public static void selectionSort(int[] a, int n) {
 
 ### 代码
 
-```java
+``` java
 public static void sort(int[] sArray) {
     int[] arr = Arrays.copyOf(sArray, sArray.length);
-    
+
     int gap = 1;
     while (gap < arr.length / 3) {
         gap = gap * 3 + 1;
     }
-    
+
     while (gap < 0) {
         for (int i = gap; i < arr.length; i++) {
             int tmp = arr[i];
@@ -186,7 +189,7 @@ public static void sort(int[] sArray) {
 
 ## 代码
 
-```java
+``` java
 public class MergeSort {
     public static void mergeSort(int[] a, int n) {
         mergeSortInternally(a, 0, n-1);
@@ -245,13 +248,13 @@ public class MergeSort {
 - 时间复杂度 $O(n\log {n})$
   * best, worst, mean
 
-```sh
-T(n) = 2*T(n/2) + n 
-     = 2*(2*T(n/4) + n/2) + n 
-     = 4*T(n/4) + 2*n = 4*(2*T(n/8) + n/4) + 2*n 
-     = 8*T(n/8) + 3*n = 8*(2*T(n/16) + n/8) + 3*n 
-     = 16*T(n/16) + 4*n 
-     ...... 
+``` sh
+T(n) = 2*T(n/2) + n
+     = 2*(2*T(n/4) + n/2) + n
+     = 4*T(n/4) + 2*n = 4*(2*T(n/8) + n/4) + 2*n
+     = 8*T(n/8) + 3*n = 8*(2*T(n/16) + n/8) + 3*n
+     = 16*T(n/16) + 4*n
+     ......
      = 2^k * T(n/2^k) + k * n
 ```
 
@@ -285,7 +288,7 @@ T(n) = 2*T(n/2) + n
 
 ### 代码
 
-```java
+``` java
 public class QuickSort {
     public static void quickSort(int[] arr, int n) {
         quickSortInternally(arr, 0, n - 1);
@@ -334,7 +337,7 @@ public class QuickSort {
   * best，$O(n\log{n})$，每次分区操作，我们选择的 pivot 都很合适，正好能将大区间对等地一分为二
   * worst， $O(n^2)$， 有序数列 1，3，5，6，8。如果我们每次选择最后一个元素作为 pivot，那每次分区得到的两个区间都是不均等的
 
-```sh
+``` sh
 T(1) = C； n=1时，只需要常量级的执行时间，所以表示为C。
 T(n) = 2*T(n/2) + n； n>1          Best
 ```

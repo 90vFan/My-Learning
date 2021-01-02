@@ -45,13 +45,13 @@ Mapping Type 由 Lucence field 决定，不同 Type 中的相同文档字段会�
 
 直接添加**Type**字段
 
-```json
+``` json
 PUT twitter
 {
   "mappings": {
     "_doc": {
       "properties": {
-        "type": { "type": "keyword" }, 
+        "type": { "type": "keyword" },
         "name": { "type": "text" },
         "user_name": { "type": "keyword" },
         "email": { "type": "keyword" },
@@ -64,7 +64,7 @@ PUT twitter
 
 PUT twitter/_doc/user-kimchy
 {
-  "type": "user", 
+  "type": "user",
   "name": "Shay Banon",
   "user_name": "kimchy",
   "email": "shay@kimchy.com"
@@ -72,7 +72,7 @@ PUT twitter/_doc/user-kimchy
 
 PUT twitter/_doc/tweet-1
 {
-  "type": "tweet", 
+  "type": "tweet",
   "user_name": "kimchy",
   "tweeted_at": "2017-10-24T09:00:00Z",
   "content": "Types are going away"
@@ -89,7 +89,7 @@ GET twitter/_search
       },
       "filter": {
         "match": {
-          "type": "tweet" 
+          "type": "tweet"
         }
       }
     }
@@ -128,4 +128,3 @@ Coordinating Node，处理客户端请求，集群每个节点都起到 Coordina
 倒排索引：索引页，单词到文档ID的索引
 
 <https://zh.wikipedia.org/wiki/%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95>
-

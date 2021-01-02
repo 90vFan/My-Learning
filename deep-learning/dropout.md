@@ -21,7 +21,7 @@ Dropout
 
 #### 前向传播
 
-```python
+``` python
 def dropout_forward(X, mode):
     """
 	反向随机失活: 推荐实现方式。
@@ -43,7 +43,7 @@ def dropout_forward(X, mode):
 
 #### 反向传播
 
-```python
+``` python
 def dropout_backward(dout, mode, mask):    
     if mode == 'train':
         dx = dout * mask

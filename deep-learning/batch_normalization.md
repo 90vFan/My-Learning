@@ -67,7 +67,7 @@ BN 引入了两个可学习的参数 $\gamma$ 和 $\beta$（**变换重构**）�
 
 ### 前向传播
 
-```python
+``` python
 
 def batchnorm_forward(x, gamma, beta, bn_param):
     """
@@ -109,12 +109,12 @@ def batchnorm_forward(x, gamma, beta, bn_param):
         ##########################################
 
         cache = (x, mu, var, eps, x_norm, gamma, beta, out)
-        
+
         running_mean = momentum * running_mean + (1 - momentum) * mu
         running_var  = momentum * running_var  + (1 - momentum) * var
     elif mode == 'test':
         x_norm = (x - running_mean) / np.sqrt(running_var + eps)
-       
+
     	# 训练超参数 gamma/beta，重构数据分布
     	out = gamma * x_norm + beta
     else:
@@ -151,21 +151,21 @@ $$\frac{\partial L}{\partial \sigma^2} =  \frac{\partial L}{\partial \hat{x_i}} 
 
 $$\frac{\partial L}{\partial x_i} =  \frac{\partial L}{\partial \hat{x_i}} \frac{\partial \hat{x_i}}{\partial {x_i}} +   \frac{\partial L}{\partial \sigma^2} \frac{\partial \sigma^2}{\partial {x_i}} + \frac{\partial L}{\partial \mu}\frac{\partial \mu}{\partial x_i} \\ = \frac{\partial L}{\partial \hat{x_i}} \frac{1}{\sqrt{\sigma^2 + \epsilon}} + \frac{\partial L}{\partial \sigma^2} \frac{2(x_i - \mu)}{N}  + \frac{\partial L}{\partial \mu} \frac{1}{N} $$
 
-```python
+``` python
 def batchnorm_backward_alt(dout, cache):
     """
-    Alternative backward pass for batch normalization.     
+    Alternative backward pass for batch normalization.
     """
     (x, mu, var, eps, x_norm, gamma, beta, out) = cache
     N,D = dout.shape
-    
+
     dx_norm = dout * gamma
     dgamma = np.sum(dout * x_norm, axis=0)
     dbeta  = np.sum(dout, axis=0)
 
     dvar = np.sum(dx_norm * (x - mu) * (-0.5) * np.power(var + eps, -3/2), axis=0)
     dmu = -np.sum(dx_norm / np.sqrt(var + eps), axis=0) + dvar * (-2) * np.sum(x - mu, axis=0) / N
-    dx  =  dx_norm / np.sqrt(var + eps) + dvar * 2 * (x - mu) / N  + dmu / N     
+    dx  =  dx_norm / np.sqrt(var + eps) + dvar * 2 * (x - mu) / N  + dmu / N
 
     return dx, dgamma, dbeta
 ```
