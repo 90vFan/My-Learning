@@ -219,6 +219,9 @@ repeat feed forward and dropout two times.
 
 ![1613740936080](images/1613740936080.png)
 
+<details>
+<summary>Code</summary>
+
 ``` python
 def DecoderBlock(d_model, d_ff, n_heads,
                  dropout, mode, ff_activation):
@@ -254,9 +257,14 @@ def DecoderBlock(d_model, d_ff, n_heads,
       ]
 ```
 
+</details>
+
 ### Transformer Decoder
 
 repeat N times, dense layer and softmax for output
+
+<details>
+<summary>Code</summary>
 
 ``` python
 def TransformerLM(vocab_size=33300,
@@ -312,3 +320,4 @@ def TransformerLM(vocab_size=33300,
     )
 ```
 
+</details>
