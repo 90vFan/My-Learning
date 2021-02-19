@@ -83,7 +83,7 @@ $ last reboot
 wtmp begins Mon Jan 13 06:41:22 2020
 $ last shutdown
 
-automation@som:~$
+automation@ubuntu:~$
 
 # 开机时间
 systemd-analyze
@@ -680,28 +680,6 @@ curl -O https://dl.google.com/linux/linux_signing_key.pub &&
 apt-key add linux_signing_key.pub && apt update &&     
 apt install google-chrome-stable
 ```
-## Httpie instead of curl
-```
- http --verify=no GET https://192.168.21.11/sslvpn_download.shtml
- Referer:"https://192.168.21.11/sslvpn_logon.shtml"
- Accept:"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
- Content-Type:"application/x-www-form-urlencoded" 
- fw_username=vpn 
- fw_password=12345678 
- fw_domain=Firebox-DB submit=Login action=sslvpn_web_logon fw_logon_typei=logon lang=en-US
- 
-http --verify=no --session=/home/automation/session1.json POST https://192.168.21.11/wgcgi.cgi?action=sslvpn_download&status=logged_on&filename=WG-MVPN-SSL.exe Referer:"https://192.168.21.11/sslvpn_download.shtml"  Content-Type:"application/x-www-form-urlencoded" fw_username=vpn fw_password=12345678 fw_domain=Firebox-DB submit=Login action=sslvpn_web_logon fw_logon_typei=logon lang=en-US
-
-s=requests.Session()
-r1=s.get('https://192.168.21.11/sslvpn_download.shtml', params={'fw_username':'vpn', 'fw_password':'12345678', 'fw_domain':'
-    ...: Firebox-DB', 'submit':'Login', 'action':'sslvpn_web_logon', 'fw_logon_type':'logon','lang':'en-US'},verify=False)
-
-r2=s.get('https://192.168.21.11/wgcgi.cgi?action=sslvpn_download&status=logged_on&filename=WG-MVPN-SSL.exe', params={'action
-    ...: ':'sslvpn_download', 'status':'logged_on', 'filename':'WG-MVPN-SSL.exe'}, auth=('vpn', '12345678'),  headers={'User-Agent':u
-    ...: a.chrome})
-
- ```
- 
 ## samba 
  ```
  [osmc]
@@ -715,7 +693,7 @@ r2=s.get('https://192.168.21.11/wgcgi.cgi?action=sslvpn_download&status=logged_o
     path = /mnt/hdd
     create mask = 0666
     directory mask = 0777
-```
+ ```
 ## KVM
 ```
 virsh qemu-agent-command ubuntu16.04 '{"execute":"guest-info"}'
@@ -738,7 +716,7 @@ virsh net-start default
 qemu-img info ubuntu-1604.qcow2
 
 # backing image chain
-qemu-img info --backing-chain SOM-FireboxV.qcow2
+qemu-img info --backing-chain SOM-device.qcow2
 
 # rebase backing image, 其他修改合并到sn3
 qemu-img rebase -b centos2_sn1.qcow2 centos2_sn3.qcow2
@@ -761,18 +739,18 @@ Image committed.
 
 ### clone kvm base on base.qcow2 and base.xml
 
-**FireboxV**
+**device**
 ```sh
-$ sudo qemu-img create -f qcow2 -F qcow2 -b base-FireboxV-12_4-tmpl.qcow2 mock_fireboxv_14_39.qcow2         
-Formatting 'mock_fireboxv_14_39.qcow2', fmt=qcow2 size=4729536000 backing_file=base-FireboxV-12_4-tmpl.qcow2 cluster_size=65536 lazy_refcounts=off refcount_bits=16
-$ virt-clone --connect=qemu:///system --original-xml /tmp/temp_fireboxv.xml -n Mock-Fireboxv-14.39 --preserve-data -f mock_fireboxv_14_39.qcow2 --print-xml | sed s/4555/$sn_port/g | sed s/ovsname/ovs1412/g > /tmp/mock_fireboxv_14_39.xml
+$ sudo qemu-img create -f qcow2 -F qcow2 -b base-device-12_4-tmpl.qcow2 mock_device_14_39.qcow2         
+Formatting 'mock_device_14_39.qcow2', fmt=qcow2 size=4729536000 backing_file=base-device-12_4-tmpl.qcow2 cluster_size=65536 lazy_refcounts=off refcount_bits=16
+$ virt-clone --connect=qemu:///system --original-xml /tmp/temp_device.xml -n Mock-device-14.39 --preserve-data -f mock_device_14_39.qcow2 --print-xml | sed s/4555/$sn_port/g | sed s/ovsname/ovs1412/g > /tmp/mock_device_14_39.xml
 
-$ sudo vi /tmp/mock_fireboxv_14_39.xml
+$ sudo vi /tmp/mock_device_14_39.xml
 # add <target dev="vnet9"/> in <interface .../>
 
-$ virsh define /tmp/mock_fireboxv_14_39.xml
-Domain Mock-Fireboxv-14.39 defined from /tmp/mock_fireboxv_14_39.xml
-$ virsh start Mock-Fireboxv-14.39
+$ virsh define /tmp/mock_device_14_39.xml
+Domain Mock-device-14.39 defined from /tmp/mock_device_14_39.xml
+$ virsh start Mock-device-14.39
 ```
 **Ubuntu**
 ```sh
@@ -786,7 +764,7 @@ $  virsh start Mock-Ubuntu-14.40
 ```
 
 ```sh
-base_xml=/home/automation/scripts/fireboxv.xml
+base_xml=/home/automation/scripts/device.xml
 base_disk=/var/lib/libvirt/images/clone/base-xtmv-12-1.qcow2
 ovsname=watsng-vswitch
 
@@ -898,7 +876,7 @@ iface br-manage inet static
         network 10.138.40.0
         broadcast 10.138.40.255
         gateway 10.138.40.254
-        dns-search wgti.net
+        dns-search example.net
         dns-nameservers 172.23.0.5 114.114.114.114
 #       bridge_ports eno1
 #       bridge_stp off
@@ -912,7 +890,7 @@ iface macvlan0 inet static
         address 10.138.40.111
         netmask 255.255.255.0
         gateway 10.138.40.254
-        dns-search wgti.net
+        dns-search example.net
         dns-nameservers 172.23.0.5 114.114.114.114
         post-down ip link del dev macvlan0
 
@@ -1217,8 +1195,8 @@ git config --global --get https.proxy
 ## git reset remote url
 ```sh
 $ git remote -v
-origin  git@gitlab.wgti.net:wats-ng/docs.wiki.git (fetch)
-origin  git@gitlab.wgti.net:wats-ng/docs.wiki.git (push)
+origin  git@gitlab.example.net:wats-ng/docs.wiki.git (fetch)
+origin  git@gitlab.example.net:wats-ng/docs.wiki.git (push)
 
 $ git remote set-url origin git@10.138.196.26:wats-ng/docs.wiki.git
 
