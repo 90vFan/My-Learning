@@ -1,223 +1,98 @@
-# Transformer
+Transformer
+---------
 
-## Structure
+[TOC]
 
 
 
+## Architecture
 
+![transformer_encoder](images/transformer_encoder-1614495168703.png)
 
-## LSTM Seq2Seq of NMT 
+### Decoder
 
-![NMTModel](images/NMTModel-1613742442123.png)
+![transformer_decoder](images/transformer_decoder.png)
 
-<details>
-<summary>Model Code with Trax</summary>
+### Encoder
 
-``` python
-def NMTAttn(input_vocab_size=33300,
-    target_vocab_size=33300,
-    d_model=1024,
-    n_encoder_layers=2,
-    n_decoder_layers=2,
-    n_attention_heads=4,
-    attention_dropout=0.0,
-    mode='train'):
-    """Returns an LSTM sequence-to-sequence model with attention.
+![encoder](images/encoder-1614495196118.png)
 
-    The input to the model is a pair (input tokens, target tokens), e.g.,
-    an English sentence (tokenized) and its translation into German (tokenized).
 
-    Args:
-    input_vocab_size: int: vocab size of the input
-    target_vocab_size: int: vocab size of the target
-    d_model: int:  depth of embedding (n_units in the LSTM cell)
-    n_encoder_layers: int: number of LSTM layers in the encoder
-    n_decoder_layers: int: number of LSTM layers in the decoder after attention
-    n_attention_heads: int: number of attention heads
-    attention_dropout: float, dropout for the attention layer
-    mode: str: 'train', 'eval' or 'predict', predict mode is for fast inference
-
-    Returns:
-    A LSTM sequence-to-sequence model with attention.
-    """
-
-    ### START CODE HERE (REPLACE INSTANCES OF `None` WITH YOUR CODE) ###
-
-    # Step 0: call the helper function to create layers for the input encoder
-    input_encoder = input_encoder_fn(input_vocab_size, d_model, n_encoder_layers)
-
-    # Step 0: call the helper function to create layers for the pre-attention decoder
-    pre_attention_decoder = pre_attention_decoder_fn(mode, target_vocab_size, d_model)
-
-    # Step 1: create a serial network
-    model = tl.Serial( 
-
-    # Step 2: copy input tokens and target tokens as they will be needed later.
-    tl.Select([0, 1, 0, 1]),
-
-    # Step 3: run input encoder on the input and pre-attention decoder the target.
-    tl.Parallel(input_encoder, pre_attention_decoder),
-
-    # Step 4: prepare queries, keys, values and mask for attention.
-    tl.Fn('PrepareAttentionInput', prepare_attention_input, n_out=4),
-
-    # Step 5: run the AttentionQKV layer
-    # nest it inside a Residual layer to add to the pre-attention decoder activations(i.e. queries)
-    tl.Residual(tl.AttentionQKV(d_feature=d_model, n_heads=n_attention_heads, dropout=attention_dropout, mode=mode)),
-
-    # Step 6: drop attention mask (i.e. index = None
-    tl.Select([0, 2]),
-
-    # Step 7: run the rest of the RNN decoder
-    [tl.LSTM(d_model) for _ in range(n_encoder_layers)],
-
-    # Step 8: prepare output by making it the right size
-    tl.Dense(target_vocab_size),
-
-    # Step 9: Log-softmax for output
-    tl.LogSoftmax(axis=-1)
-    )
-
-	### END CODE HERE
-
-	return model
-```
-
-</details>
-
-## Attention
-
-### Dot-Product Attention
-
-![1613712929309](images/1613712929309.png)
-
-#### Queries, Keys, Values
-
-![1613742285460](images/1613742285460.png)
-
-![1613742302420](images/1613742302420.png)
-
-![1613713516621](images/1613713516621.png)
-
-input -> representation(a column vector)
-
-Q, K, V 中每一列表示一个单词
-
-计算得到 attention(a weighted sequence)
-
-Attention weights: $W_A = Q K^T$ 
-
-Result: $score = softmax(Q K^T) * V $
-
-相似的向量 Q, K 在 dot product 后会得到更大的 score，通过 softmax 可以将点乘的结果转化为概率 probability
-
-![1613713833050](images/1613713833050.png)
-
-![1613715296315](images/1613715296315.png)
-
-A softmax function makes attention more focused on best keys.
-
-![1613715891075](images/1613715891075.png)
-
-- K: [$L_K$, D], English words
-- Q: [$L_Q$, D], German words, each query $q_i$ picks the most similar key $k_j$
-- V: [$L_K$, D],   $Z = W_A*V$, attention weights multiply V to get weighted combination of the input
-
-**Each query $q_i$ picks the most similar key $k_j$ to get $v_j$, and return a weighted sequence of words(attention * words)**
-
-### Causal Attention
-
-![1613722564139](images/1613722564139.png)
-
-- Encoder/decoder attention: a sequence(German, decoder) attend to another one(English, encoder), translation
-- Causal (self) attention: words attend to words in the past of the same sentence, text sumaries
-- Bi-directional self-attention: words in the same sentence look both at previous and future words
-
-![1613723693323](images/1613723693323.png)
-
-![1613723722563](images/1613723722563.png)
-
-- K: [L, D]
-- Q: [L, D], same sentence with K, each query $q_i$ picks the most similar key $k_j$ but only when $j <= i$ (attend to previous words only)
-- V: [L, D]
-
-**Each query $q_i$ picks the most similar key $k_j$ in the same sentence to get $v_j$, and return a weighted sequence of previous words(attention * previous words)**
-
-### Multi-head attention
-
-![1613726199957](images/1613726199957.png)
-
-![1613726261522](images/1613726261522.png)
-
-#### head
-
-Normalization: divide by $\sqrt{d_k}$ to prevent the gradients to be extremely small when large values of D sub K
-
-D: embedding dimension, K: words sequence length
-
-![1613726313233](images/1613726313233.png)
-
-#### multi-head Concatenation
-
-![1613726347705](images/1613726347705.png)
-
-****
-
-#### Scaled Dot-Product Attention
-
-![1613726651374](images/1613726651374.png)
-
-#### Multi-head attention formula
-
-![1613726713554](images/1613726713554.png)
 
 ## Transformer Decoder
 
 ![1613740897078](images/1613740897078.png)
 
-### Feed forward layer
+### Causal Attention Function
 
-![1613740960880](images/1613740960880.png)
+![masked-attention](images/masked-attention.png)
+
+<details>
+<summary>Code</summary>
 
 ``` python
-def FeedForward(d_model, d_ff, dropout, mode, ff_activation):
-    """Returns a list of layers that implements a feed-forward block.
-
-    The input is an activation tensor.
+def CausalAttention(d_feature, 
+                    n_heads, 
+                    compute_attention_heads_closure=compute_attention_heads_closure,
+                    dot_product_self_attention=dot_product_self_attention,
+                    compute_attention_output_closure=compute_attention_output_closure,
+                    mode='train'):
+    """Transformer-style multi-headed causal attention.
 
     Args:
-        d_model (int):  depth of embedding.
-        d_ff (int): depth of feed-forward layer.
-        dropout (float): dropout rate (how much to drop out).
+        d_feature (int):  dimensionality of feature embedding.
+        n_heads (int): number of attention heads.
+        compute_attention_heads_closure (function): Closure around compute_attention heads.
+        dot_product_self_attention (function): dot_product_self_attention function. 
+        compute_attention_output_closure (function): Closure around compute_attention_output. 
         mode (str): 'train' or 'eval'.
-        ff_activation (function): the non-linearity in feed-forward layer.
 
     Returns:
-        list: list of trax.layers.combinators.Serial that maps an activation tensor to an activation tensor.
+        trax.layers.combinators.Serial: Multi-headed self-attention model.
     """
     
-    # Create feed-forward block (list) with two dense layers with dropout and input normalized
-    return [ 
-        # Normalize layer inputs
-        tl.LayerNorm(), 
-        # Add first feed forward (dense) layer (don't forget to set the correct value for n_units)
-        tl.Dense(d_ff), 
-        # Add activation function passed in as a parameter (you need to call it!)
-        ff_activation(),  # Generally ReLU
-        # Add dropout with rate and mode specified (i.e., don't use dropout during evaluation)
-        tl.Dropout(rate=dropout, mode=mode), 
-        # Add second feed forward layer (don't forget to set the correct value for n_units)
-        tl.Dense(d_model), 
-        # Add dropout with rate and mode specified (i.e., don't use dropout during evaluation)
-        tl.Dropout(rate=dropout, mode=mode) 
-    ]
+    assert d_feature % n_heads == 0
+    d_head = d_feature // n_heads
+
+    ### START CODE HERE (REPLACE INSTANCES OF 'None' with your code) ###
+    
+    # HINT: The second argument to tl.Fn() is an uncalled function (without the parentheses)
+    # Since you are dealing with closures you might need to call the outer 
+    # function with the correct parameters to get the actual uncalled function.
+    ComputeAttentionHeads = tl.Fn('AttnHeads', 
+                                  compute_attention_heads_closure(n_heads, d_head), 
+                                  n_out=1)
+        
+
+    return tl.Serial(
+        tl.Branch( # creates three towers for one input, takes activations and creates queries keys and values
+            [tl.Dense(d_feature), ComputeAttentionHeads], # queries
+            [tl.Dense(d_feature), ComputeAttentionHeads], # keys
+            [tl.Dense(d_feature), ComputeAttentionHeads], # values
+        ),
+        
+        tl.Fn('DotProductAttn', dot_product_self_attention, n_out=1), # takes QKV
+        # HINT: The second argument to tl.Fn() is an uncalled function
+        # Since you are dealing with closures you might need to call the outer 
+        # function with the correct parameters to get the actual uncalled function.
+        tl.Fn('AttnOutput', compute_attention_output_closure(n_heads, d_head), n_out=1), # to allow for parallel
+        tl.Dense(d_feature) # Final dense layer
+    )
 ```
 
-repeat feed forward and dropout two times.
+</details>
+
+
 
 ### Decoder Block Layer
 
+![1613740960880](images/1613740960880.png)
+
 ![1613740936080](images/1613740936080.png)
+
+![transformer_decoder_1](images/transformer_decoder_1.png)
+
+
 
 <details>
 <summary>Code</summary>
@@ -240,28 +115,58 @@ def DecoderBlock(d_model, d_ff, n_heads,
     Returns:
         list: list of trax.layers.combinators.Serial that maps an activation tensor to an activation tensor.
     """
-        
+    
+    ### START CODE HERE (REPLACE INSTANCES OF 'None' with your code) ###
+    
+    # Create masked multi-head attention block using CausalAttention function
+    causal_attention = CausalAttention( 
+                        d_model,
+                        n_heads=n_heads,
+                        mode=mode
+                        )
+
+    # Create feed-forward block (list) with two dense layers with dropout and input normalized
+    feed_forward = [ 
+        # Normalize layer inputs
+        tl.LayerNorm(),
+        # Add first feed forward (dense) layer (don't forget to set the correct value for n_units)
+        tl.Dense(d_ff),
+        # Add activation function passed in as a parameter (you need to call it!)
+        ff_activation(), # Generally ReLU
+        # Add dropout with rate and mode specified (i.e., don't use dropout during evaluation)
+        tl.Dropout(rate=dropout, mode=mode),
+        # Add second feed forward layer (don't forget to set the correct value for n_units)
+        tl.Dense(d_model),
+        # Add dropout with rate and mode specified (i.e., don't use dropout during evaluation)
+        tl.Dropout(rate=dropout, mode=mode)
+    ]
+
     # Add list of two Residual blocks: the attention with normalization and dropout and feed-forward blocks
     return [
       tl.Residual(
           # Normalize layer input
-          tl.LayerNorm(), 
-          # Add causal attention 
-          tl.CausalAttention(d_model, n_heads=n_heads, dropout=dropout, mode=mode) 
+          tl.LayerNorm(),
+          # Add causal attention block previously defined (without parentheses)
+          causal_attention,
+          # Add dropout with rate and mode specified
+          tl.Dropout(rate=dropout, mode=mode)
         ),
       tl.Residual(
-          # Add feed-forward block
-          # We don't need to normalize the layer inputs here. The feed-forward block takes care of that for us.
-          FeedForward(d_model, d_ff, dropout, mode, ff_activation)
+          # Add feed forward block (without parentheses)
+          feed_forward
         ),
       ]
 ```
 
 </details>
 
-### Transformer Decoder
 
-repeat N times, dense layer and softmax for output
+
+### Transformer Language Model
+
+![transformer_decoder](images/transformer_decoder.png)
+
+Aka, repeat N times, dense layer and softmax for output. Predict the output probabilty of the next word.
 
 <details>
 <summary>Code</summary>
@@ -296,6 +201,14 @@ def TransformerLM(vocab_size=33300,
         trax.layers.combinators.Serial: A Transformer language model as a layer that maps from a tensor of tokens
         to activations over a vocab set.
     """
+    # Embedding inputs and positional encoder
+    positional_encoder = [ 
+        # Add embedding layer of dimension (vocab_size, d_model)
+        tl.Embedding(vocab_size, d_model),
+        # Use dropout with rate and mode specified
+        tl.Dropout(rate=dropout, mode=mode),
+        # Add positional encoding layer with maximum input length and mode specified
+        tl.PositionalEncoding(max_len=max_len, mode=mode)]
     
     # Create stack (list) of decoder blocks with n_layers with necessary parameters
     decoder_blocks = [ 
@@ -321,3 +234,238 @@ def TransformerLM(vocab_size=33300,
 ```
 
 </details>
+
+## Encoder
+
+![encoder](images/encoder-1614495447360.png)
+
+<details>
+    <summary>FeedForwardBlock</summary>
+
+``` python
+def FeedForwardBlock(d_model, d_ff, dropout, dropout_shared_axes, mode, activation):
+    """Returns a list of layers implementing a feed-forward block.
+    Args:
+        d_model: int:  depth of embedding
+        d_ff: int: depth of feed-forward layer
+        dropout: float: dropout rate (how much to drop out)
+        dropout_shared_axes: list of integers, axes to share dropout mask
+        mode: str: 'train' or 'eval'
+        activation: the non-linearity in feed-forward layer
+    Returns:
+        A list of layers which maps vectors to vectors.
+    """
+    
+    dropout_middle = tl.Dropout(rate=dropout,
+                                shared_axes=dropout_shared_axes, 
+                                mode=mode)
+  
+    dropout_final = tl.Dropout(rate=dropout, 
+                               shared_axes=dropout_shared_axes, 
+                               mode=mode)
+
+    ### START CODE HERE (REPLACE INSTANCES OF 'None' WITH YOUR CODE) ###
+    
+    ff_block = [ 
+        # trax Layer normalization 
+        tl.LayerNorm(),
+        # trax Dense layer using `d_ff`
+        tl.Dense(n_units=d_ff),
+        # activation() layer - you need to call (use parentheses) this func!
+        activation(),
+        # dropout middle layer
+        dropout_middle,
+        # trax Dense layer using `d_model`
+        tl.Dense(d_model),
+        # dropout final layer
+        dropout_final,
+    ]
+    
+    ### END CODE HERE ###
+    
+    return ff_block
+```
+</details>
+
+<details>
+<summary>EncoderBlock</summary>
+
+``` python
+def EncoderBlock(d_model, d_ff, n_heads, dropout, dropout_shared_axes,
+                  mode, ff_activation, FeedForwardBlock=FeedForwardBlock):
+    """
+    Returns a list of layers that implements a Transformer encoder block.
+    The input to the layer is a pair, (activations, mask), where the mask was
+    created from the original source tokens to prevent attending to the padding
+    part of the input.
+    
+    Args:
+        d_model (int): depth of embedding.
+        d_ff (int): depth of feed-forward layer.
+        n_heads (int): number of attention heads.
+        dropout (float): dropout rate (how much to drop out).
+        dropout_shared_axes (int): axes on which to share dropout mask.
+        mode (str): 'train' or 'eval'.
+        ff_activation (function): the non-linearity in feed-forward layer.
+        FeedForwardBlock (function): A function that returns the feed forward block.
+    Returns:
+        list: A list of layers that maps (activations, mask) to (activations, mask).
+        
+    """
+    
+    ### START CODE HERE (REPLACE INSTANCES OF 'None' WITH YOUR CODE) ###
+    
+    # Attention block
+    attention = tl.Attention( 
+        # Use dimension of the model
+        d_feature=d_model,
+        # Set it equal to number of attention heads
+        n_heads=n_heads,
+        # Set it equal `dropout`
+        dropout=dropout,
+        # Set it equal `mode`
+        mode=mode
+    )
+    
+    # Call the function `FeedForwardBlock` (implemented before) and pass in the parameters
+    feed_forward = FeedForwardBlock( 
+        d_model,
+        d_ff,
+        dropout,
+        dropout_shared_axes,
+        mode,
+        ff_activation
+    )
+    
+    # Dropout block
+    dropout_ = tl.Dropout( 
+        # set it equal to `dropout`
+        rate=dropout,
+        # set it equal to the axes on which to share dropout mask
+        shared_axes=dropout_shared_axes,
+        # set it equal to `mode`
+        mode=mode
+    )
+    
+    encoder_block = [ 
+        # add `Residual` layer
+        tl.Residual(
+            # add norm layer
+            tl.LayerNorm(),
+            # add attention
+            attention,
+            # add dropout
+            dropout_,
+        ),
+        # add another `Residual` layer
+        tl.Residual(
+            # add feed forward
+            feed_forward,
+        ),
+    ]
+    
+    ### END CODE HERE ###
+    
+    return encoder_block
+```
+
+</details>
+
+### Transformer Encoder
+
+
+<details>
+<summary>TransformerEncoder</summary>
+
+``` python
+def TransformerEncoder(vocab_size=vocab_size,
+                       n_classes=10,
+                       d_model=512,
+                       d_ff=2048,
+                       n_layers=6,
+                       n_heads=8,
+                       dropout=0.1,
+                       dropout_shared_axes=None,
+                       max_len=2048,
+                       mode='train',
+                       ff_activation=tl.Relu,
+                      EncoderBlock=EncoderBlock):
+    
+    """
+    Returns a Transformer encoder model.
+    The input to the model is a tensor of tokens.
+  
+    Args:
+        vocab_size (int): vocab size. Defaults to vocab_size.
+        n_classes (int): how many classes on output. Defaults to 10.
+        d_model (int): depth of embedding. Defaults to 512.
+        d_ff (int): depth of feed-forward layer. Defaults to 2048.
+        n_layers (int): number of encoder/decoder layers. Defaults to 6.
+        n_heads (int): number of attention heads. Defaults to 8.
+        dropout (float): dropout rate (how much to drop out). Defaults to 0.1.
+        dropout_shared_axes (int): axes on which to share dropout mask. Defaults to None.
+        max_len (int): maximum symbol length for positional encoding. Defaults to 2048.
+        mode (str): 'train' or 'eval'. Defaults to 'train'.
+        ff_activation (function): the non-linearity in feed-forward layer. Defaults to tl.Relu.
+        EncoderBlock (function): Returns the encoder block. Defaults to EncoderBlock.
+  
+    Returns:
+        trax.layers.combinators.Serial: A Transformer model as a layer that maps
+        from a tensor of tokens to activations over a set of output classes.
+    """
+    
+    positional_encoder = [
+        tl.Embedding(vocab_size, d_model),
+        tl.Dropout(rate=dropout, shared_axes=dropout_shared_axes, mode=mode),
+        tl.PositionalEncoding(max_len=max_len)
+    ]
+    
+    ### START CODE HERE (REPLACE INSTANCES OF 'None' WITH YOUR CODE) ###
+    
+    # Use the function `EncoderBlock` (implemented above) and pass in the parameters over `n_layers`
+    encoder_blocks = [EncoderBlock(d_model, d_ff, n_heads, dropout, dropout_shared_axes, 
+                                   mode, ff_activation)
+                      for _ in range(n_layers)]
+
+    # Assemble and return the model.
+    return tl.Serial(
+        # Encode
+        tl.Branch(
+            # Use `positional_encoder`
+            positional_encoder,
+            # Use trax padding mask
+            tl.PaddingMask(pad=0),
+        ),
+        # Use `encoder_blocks`
+        encoder_blocks,
+        # Use select layer
+        tl.Select([0], n_in=2),
+        # Use trax layer normalization
+        tl.LayerNorm(),
+        # Map to output categories.
+        # Use trax mean. set axis to 1
+        tl.Mean(axis=1),
+        # Use trax Dense using `n_classes`
+        tl.Dense(n_classes),
+        # Use trax log softmax
+        tl.LogSoftmax(),
+    )
+
+```
+</details>
+
+
+## BERT Pre-Training Objective
+
+![1614495090484](images/1614495090484.png)
+
+```sh
+Inputs: 
+
+ <Z> BBQ Class Taking Place in Missoul <Y> Do you want to get better at making <X>? You will have the opportunity, put <W> your calendar now. Thursday, September 22 <V> World Class BBQ Champion, Tony Balay <U>onestar Smoke Rangers. He <T> teaching a beginner level class for everyone<S> to get better with their culinary skills.<R> teach you everything you need to know to <Q> a KCBS BBQ competition,<P>, recipes, timelines, meat selection <O>, plus smoker and fire information. The<N> be in the class is $35 per person <M> for spectators it is free. Include <L> the cost will be either a  <K>shirt or apron and you <J> tasting samples of each meat that is prepared <I>
+
+Targets: 
+
+ <Z> Beginners <Y>a! <X> delicious BBQ <W> this on <V>nd join <U> from L <T> will be<S> who wants<R> He will <Q> compete in<P> including techniques <O> and trimming<N> cost to <M>, and <L>d in <K>t- <J> will be <I>.
+```
+
