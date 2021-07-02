@@ -39,7 +39,7 @@
 
 首先我们先看一下经典金字塔，Mike Cohn 在他的着作《Succeeding with Agile》一书中提出了这个概念。
 
-![img](./assets/v2-0883f8456eee72232f27959fed0f57e1_720w.jpg)
+![img](./images/v2-0883f8456eee72232f27959fed0f57e1_720w.jpg)
 
 这个金字塔从底层到上层依次是单元测试(Unit Tests)、服务测试(Service Tests)、UI测试(UI Tests)。越接近接近底层，收益成本比越高。这里面服务测试(Service Tests)就是接口测试，也可以叫做API测试。
 
@@ -58,7 +58,7 @@
 
 由于产品开发迭代的快节奏，现在很多团队更加推崇菱形测试策略。这里做一个简单的介绍。
 
-![img](./assets/c72e5900d670f779c5dd6827407032cd.png)
+![img](./images/c72e5900d670f779c5dd6827407032cd.png)
 
 
 菱形的测试策略，遵循**“重量级 API 测试，轻量级 GUI 测试，轻量级单元测试”**的原则。
