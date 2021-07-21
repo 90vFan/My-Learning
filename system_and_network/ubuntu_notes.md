@@ -1,5 +1,36 @@
 ubuntu
 ------
+## ntp
+```sh
+ntpdate -d time1.aliyun.com
+
+
+```
+
+## nc and nmap
+```sh
+# 测试本地端口监听: udp listen
+nc -ul 123
+
+# 测试远端端口监听：
+nc -u $server_ip 123
+
+# nmap 查看本地端口：
+#   -sU: UDP Scan
+#   -sn: Ping Scan
+#   -sL: List Scan
+$ sudo nmap -p123 -sU localhost
+
+Starting Nmap 6.40 ( http://nmap.org ) at 2021-07-21 10:15 CST
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.000093s latency).
+Other addresses for localhost (not scanned): 127.0.0.1
+PORT    STATE SERVICE
+123/udp open  ntp
+
+Nmap done: 1 IP address (1 host up) scanned in 0.06 seconds
+```
+
 ## docker container start time
 ```sh
 $ docker container inspect --format='{{.State.StartedAt}}' signature_sync | xargs date +%s -d
