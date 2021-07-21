@@ -2,9 +2,18 @@ ubuntu
 ------
 ## ntp
 ```sh
-ntpdate -d time1.aliyun.com
+$ ntpdate -d time1.aliyun.com
+$ ntpdate -d time1.aliyun.com
 
+# /etc/ntp.conf
+restrict 192.168.1.0 netmask 255.255.255.0 nomodify notrap
+server time1.aliyun.com
+logfile /var/log/ntp.log
 
+$ ntpq -p
+     remote           refid      st t when poll reach   delay   offset  jitter
+==============================================================================
+ 1.2.3.4   .INIT.          16 u    -   64    0    0.000    0.000   0.000
 ```
 
 ## nc and nmap
