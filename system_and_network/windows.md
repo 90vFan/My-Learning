@@ -31,10 +31,10 @@ netsh wlan show interfaces
 ```xml
 <?xml version="1.0"?>
 <WLANProfile xmlns="http://www.microsoft.com/networking/WLAN/profile/v1">
-    <name>CPE-5G-0297</name>
+    <name>SSID_XXX</name>
     <SSIDConfig>
         <SSID>
-            <name>CPE-5G-0297</name>
+            <name>SSID_XXX</name>
         </SSID>
     </SSIDConfig>
     <connectionType>ESS</connectionType>
@@ -49,7 +49,7 @@ netsh wlan show interfaces
             <sharedKey>
                 <keyType>passPhrase</keyType>
                 <protected>false</protected>
-                <keyMaterial>admin123</keyMaterial>
+                <keyMaterial>PASSWORD</keyMaterial>
             </sharedKey>
         </security>
     </MSM>
