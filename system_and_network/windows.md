@@ -16,3 +16,45 @@ Get-NetFirewallRule -Name *ssh*
 # If the firewall does not exist, create one
 New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
 ```
+
+## powershell set wlan
+```sh
+
+netsh wlan delete profile SSID_XXX
+netsh wlan add profile filename="./wlan_profile_demo.xml"
+netsh wlan connect name="SSID_XXX"
+netsh wlan disconnect interface="WLAN"
+
+netsh wlan show interfaces
+```
+
+```xml
+<?xml version="1.0"?>
+<WLANProfile xmlns="http://www.microsoft.com/networking/WLAN/profile/v1">
+    <name>SSID_XXX</name>
+    <SSIDConfig>
+        <SSID>
+            <name>SSID_XXX</name>
+        </SSID>
+    </SSIDConfig>
+    <connectionType>ESS</connectionType>
+    <connectionMode>auto</connectionMode>
+    <MSM>
+        <security>
+            <authEncryption>
+                <authentication>WPA2PSK</authentication>
+                <encryption>AES</encryption>
+                <useOneX>false</useOneX>
+            </authEncryption>
+            <sharedKey>
+                <keyType>passPhrase</keyType>
+                <protected>false</protected>
+                <keyMaterial>PASSWORD</keyMaterial>
+            </sharedKey>
+        </security>
+    </MSM>
+    <MacRandomization xmlns="http://www.microsoft.com/networking/WLAN/profile/v3">
+        <enableRandomization>false</enableRandomization>
+    </MacRandomization>
+</WLANProfile>
+```
