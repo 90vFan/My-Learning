@@ -1,6 +1,6 @@
-# Willing-Ox-Learning
+# My Learning
 
-![willing-ox](../willing-ox.jpg)
+![ox](../ox.jpg)
 
 
 
@@ -14,5 +14,7 @@
 
 [机器学习-白板推导系列-合集](https://space.bilibili.com/97068901)
 
-
 ## 知命
+
+强化学习-David Silver: 智商天花板
+
