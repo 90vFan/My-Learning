@@ -438,28 +438,28 @@ vncserver -list
 vncserver -kill :1
 vncserver -kill :*
 
-ssh -L 10.138.14.34:5909:127.0.0.1:5901 -C -N -l automation 10.138.14.34
+ssh -L 172.10.14.34:5909:127.0.0.1:5901 -C -N -l automation 172.10.14.34
 ```
 
 ## linux bridge
 * virsh define bridge
 ```
-automation@watsng-u1804-kvm-14-12:~$ virsh net-list
+automation@robot-u1804-kvm-14-12:~$ virsh net-list
  Name                 State      Autostart     Persistent
 ----------------------------------------------------------
  default              active     yes           yes
  net-manage           active     yes           yes
 
-automation@watsng-u1804-kvm-14-12:~$ vi /tmp/net-manage.xml
+automation@robot-u1804-kvm-14-12:~$ vi /tmp/net-manage.xml
 <network>
   <name>net-manage</name>
   <forward mode='bridge'/>
   **<bridge name='br-manage'/>**
 </network>
 
-automation@watsng-u1804-kvm-14-12:~$ virsh net-define /tmp/net-manage.xml
+automation@robot-u1804-kvm-14-12:~$ virsh net-define /tmp/net-manage.xml
 
-automation@watsng-u1804-kvm-14-12:~$ virsh net-dumpxml net-manage
+automation@robot-u1804-kvm-14-12:~$ virsh net-dumpxml net-manage
 <network connections='1'>
   <name>net-manage</name>
   <uuid>2fa5c4cb-af9d-4ca8-b030-bdf6dc11e5ca</uuid>
@@ -467,13 +467,13 @@ automation@watsng-u1804-kvm-14-12:~$ virsh net-dumpxml net-manage
   **<bridge name='br-manage'/>**
 </network>
 
-automation@watsng-u1804-kvm-14-12:~$ virsh net-list --all
+automation@robot-u1804-kvm-14-12:~$ virsh net-list --all
  Name                 State      Autostart     Persistent
 ----------------------------------------------------------
  default              active     yes           yes
  net-manage           active     yes           yes
 
-automation@watsng-u1804-kvm-14-12:~$ virsh net-autostart net-manage
+automation@robot-u1804-kvm-14-12:~$ virsh net-autostart net-manage
 Network net-manage marked as autostarted
 
 ```
@@ -484,8 +484,8 @@ network:
         br-manage:
             dhcp4: false
             addresses:
-              - 10.138.14.12/24
-            gateway4: 10.138.14.254
+              - 172.10.14.12/24
+            gateway4: 172.10.14.254
             nameservers:
                 addresses:
                   - 172.23.0.8
@@ -806,7 +806,7 @@ $  virsh start Mock-Ubuntu-14.40
 ```sh
 base_xml=/home/automation/scripts/device.xml
 base_disk=/var/lib/libvirt/images/clone/base-xtmv-12-1.qcow2
-ovsname=watsng-vswitch
+ovsname=robot-vswitch
 
 for i in {1..8}; do
     name=xtmv-$i
@@ -844,11 +844,11 @@ http://fishcried.com/2016-02-09/openvswitch-ops-guide/
 ovs-vsctl show
 
 # add bridge
-ovs-vsctl add-br watsng-vswitch
+ovs-vsctl add-br robot-vswitch
 
 # bind host port to bridge
-ovs-vsctl add-port watsng-vswitch "eno2"
-ovs-vsctl del-port watsng-vswitch "eno2"
+ovs-vsctl add-port robot-vswitch "eno2"
+ovs-vsctl del-port robot-vswitch "eno2"
 
 # list ports/ifaces of bridge
 ovs-vsctl list-ports br-tun
@@ -911,11 +911,11 @@ iface eno2 inet static
 
 auto br-manage
 iface br-manage inet static
-        address 10.138.40.13
+        address 172.10.40.13
         netmask 255.255.255.0
-        network 10.138.40.0
-        broadcast 10.138.40.255
-        gateway 10.138.40.254
+        network 172.10.40.0
+        broadcast 172.10.40.255
+        gateway 172.10.40.254
         dns-search example.net
         dns-nameservers 172.23.0.5 114.114.114.114
 #       bridge_ports eno1
@@ -927,9 +927,9 @@ iface br-manage inet static
 auto macvlan0
 iface macvlan0 inet static
         pre-up ip link add link eth0 dev macvlan0 type macvlan mode bridge
-        address 10.138.40.111
+        address 172.10.40.111
         netmask 255.255.255.0
-        gateway 10.138.40.254
+        gateway 172.10.40.254
         dns-search example.net
         dns-nameservers 172.23.0.5 114.114.114.114
         post-down ip link del dev macvlan0
@@ -1004,19 +1004,19 @@ ssh -NL a.b.c.d:1234:www.google.com:80 a.b.c.d
 此时，在浏览器里键入：http://a.b.c.d:1234，就会看到Google的页面了。
 ```
 
-172.23.0.100 -> 10.138.14.60 -> 10.100.100.100
+172.23.0.100 -> 172.10.14.60 -> 10.100.100.100
 
 -- Localhost--> ----Server----> -- Gitlab Server -
 
 ```sh
 # start a ssh tunnel on Localhost
-ssh -L 2222:10.100.100.100:22 automation@10.138.14.60
+ssh -L 2222:10.100.100.100:22 automation@172.10.14.60
 
 # git clone
 git clone ssh://git@localhost:2222/your_username/your_repo_name.git
 
 # or
-ssh -NL localhost:22:10.138.196.26:22 automation@10.138.14.60
+ssh -NL localhost:22:172.10.196.26:22 automation@172.10.14.60
 ```
 
 
@@ -1153,9 +1153,9 @@ automation ALL=(ALL) NOPASSWD: ALL
 
 ## snap proxy
 ```
-automation@ubuntu-1804:~$ sudo snap set system proxy.ftp=http://10.138.110.1:3128
-automation@ubuntu-1804:~$ sudo snap set system proxy.https=http://10.138.110.1:3128
-automation@ubuntu-1804:~$ sudo snap set system proxy.http=http://10.138.110.1:3128
+automation@ubuntu-1804:~$ sudo snap set system proxy.ftp=http://172.10.110.1:3128
+automation@ubuntu-1804:~$ sudo snap set system proxy.https=http://172.10.110.1:3128
+automation@ubuntu-1804:~$ sudo snap set system proxy.http=http://172.10.110.1:3128
 ```
 ```
 sudo systemctl edit snapd.service
@@ -1172,8 +1172,8 @@ sudo systemctl restart snapd.service
 
 ## bash cli proxy
 ```sh
-export http_proxy=http://10.138.110.1:3128
-export https_proxy=http://10.138.110.1:3128
+export http_proxy=http://172.10.110.1:3128
+export https_proxy=http://172.10.110.1:3128
 exprot no_proxy=localhost, 127.0.0.1, *.my.lan
 ```
 put in `~/.bash_rc`  for current user 
@@ -1183,8 +1183,8 @@ put in `/etc/environment` All Users
 ```sh
 sudo vi /etc/apt/apt.conf.d/proxy.conf
 
-Acquire::http::Proxy "http://10.138.110.1:3128;
-Acquire::https::Proxy "http://10.138.110.1:3128;
+Acquire::http::Proxy "http://172.10.110.1:3128;
+Acquire::https::Proxy "http://172.10.110.1:3128;
 ```
 
 ## docker daemon
@@ -1193,8 +1193,8 @@ Acquire::https::Proxy "http://10.138.110.1:3128;
 sudo vi /etc/systemd/system/docker.service.d/http-proxy.conf
 
 [Service]
-Environment="HTTP_PROXY=http://10.138.110.1:3128"
-Environment="HTTPS_PROXY=http://10.138.110.1:3128"
+Environment="HTTP_PROXY=http://172.10.110.1:3128"
+Environment="HTTPS_PROXY=http://172.10.110.1:3128"
 Environment="NO_PROXY=localhost,127.0.0.1"
 
 sudo systemctl daemon-reload
@@ -1210,8 +1210,8 @@ vi ~/.docker/config.json
  {
    "default":
    {
-     "httpProxy": "http://10.138.111.2:3128",
-     "httpsProxy": "http://10.138.111.2:3128",
+     "httpProxy": "http://172.10.111.2:3128",
+     "httpsProxy": "http://172.10.111.2:3128",
      "noProxy": "localhost,127.0.0.1"
    }
  }
@@ -1235,14 +1235,14 @@ git config --global --get https.proxy
 ## git reset remote url
 ```sh
 $ git remote -v
-origin  git@gitlab.example.net:wats-ng/docs.wiki.git (fetch)
-origin  git@gitlab.example.net:wats-ng/docs.wiki.git (push)
+origin  git@gitlab.example.net:robot/docs.wiki.git (fetch)
+origin  git@gitlab.example.net:robot/docs.wiki.git (push)
 
-$ git remote set-url origin git@10.138.196.26:wats-ng/docs.wiki.git
+$ git remote set-url origin git@172.10.196.26:robot/docs.wiki.git
 
 $ git remote -v
-origin  git@10.138.196.26:wats-ng/docs.wiki.git (fetch)
-origin  git@10.138.196.26:wats-ng/docs.wiki.git (push)
+origin  git@172.10.196.26:robot/docs.wiki.git (fetch)
+origin  git@172.10.196.26:robot/docs.wiki.git (push)
 ```
 
 ## shell if
